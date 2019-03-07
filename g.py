@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import base64
 import uuid
 import pathlib
 import string
@@ -15,10 +16,11 @@ v_1_config = {
   "inbounds": [
     {
       "port": 1080, # 监听端口
-      "listen": "127.0.0.1", 
+      "listen": "0.0.0.0", 
       "protocol": "socks", # 入口协议为 SOCKS 5
       "settings": {
-        "auth": "noauth"  # 不认证
+        "auth": "noauth",  # 不认证
+        "udp": True,
       },
       "sniffing": {
         "enabled": False,
@@ -79,8 +81,32 @@ v_2_config = {
           }
         ]
           }
+        },
+        {
+            "protocol": "freedom",
+            "settings": {},
+            "tag": "direct",
         }
-    ]
+    ],
+
+    "routing": {
+	"domainStrategy": "IPOnDemand",
+	"rules": [
+	  {
+	    "type": "field",
+	    "outboundTag": "direct",
+	    "domain": ["geosite:cn"] # 中国大陆主流网站的域名
+	  },
+	  {
+	    "type": "field",
+	    "outboundTag": "direct",
+	    "ip": [
+	      "geoip:cn", # 中国大陆的 IP
+	      "geoip:private" # 私有地址 IP，如路由器等
+	    ]
+	  }
+	]
+    }
 }
 
 v_3_config = {
@@ -118,12 +144,18 @@ v_3_config = {
   ],
 
     "outbounds": [
-	{
-	  "protocol": "freedom",
-	  "settings": {}
-	}
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
       ]
 }
+
+    
+v2raydir = pathlib.Path('./v2ray/')
+v2ray_path = v2raydir / 'v2ray'
+v2ctl_path = v2raydir / 'v2ctl'
+os.system(f'chmod +x {v2ray_path} {v2ctl_path}')
 
 for i in range(1, 4):
     pathdir = pathlib.Path(f'v2ray_v{i}')    
