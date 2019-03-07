@@ -125,13 +125,14 @@ v_3_config = {
       ]
 }
 
-for i in range(3):
+for i in range(1, 4):
     pathdir = pathlib.Path(f'v2ray_v{i}')    
     os.system(f'rm -rf {pathdir}')
     os.system(f'cp -r v2ray {pathdir}')
-    config = f'v_{i}_config'
     config_output_path = pathdir / 'config.json'
+
+    s = f'config = v_{i}_config'
+    exec(s, globals(), locals())
+
     with open(config_output_path, 'w') as cf:
         json.dump(config, cf, indent=4)
-
-os.system('cat tmp.json')
