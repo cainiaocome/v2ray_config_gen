@@ -8,7 +8,7 @@ if [ $? -ne 0 ]; then
     echo "scp fail"
     exit -1
 fi
-ssh us4 "pkill v2ray;rm -rf /root/v2ray;tar zxf /tmp/v2ray.tar.gz /root/;nohup /root/v2ray >/dev/null 2>&1 &"
+ssh us4 "pkill v2ray;rm -rf /root/v2ray/;tar zxf /tmp/v2ray.tar.gz -C /root/;nohup /root/v2ray >/dev/null 2>&1 &"
 if [ $? -ne 0 ]; then
     echo "ssh fail"
     exit -1
